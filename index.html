@@ -3,64 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animation Matrix</title>
+    <title>Semaine des 30 ans</title>
+    <!-- Importation de la police moderne depuis Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
+        /* Styles généraux */
         body {
-            background-color: black;
-            color: limegreen;
-            font-family: "Courier New", Courier, monospace;
             margin: 0;
-            overflow: hidden;
+            padding: 0;
+            overflow-y: auto; /* Scroll vertical */
+            font-family: "Roboto Mono", monospace; /* Police moderne */
+            background-color: black;
+            color: red; /* Texte en rouge */
+            height: 100vh;
         }
 
-        .matrix {
+        /* Canvas pour l'animation Matrix */
+        canvas {
             position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
+            z-index: 0;
         }
 
-        .matrix-text {
+        /* Texte animé */
+        .content {
+            position: relative;
+            z-index: 1;
+            white-space: pre-wrap;
+            color: red;
+            font-size: 1.4em;
             text-align: center;
-            font-size: 2em;
-            line-height: 1.5;
-            color: orange;
-            position: absolute;
-            z-index: 2;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            padding: 20px;
+            font-weight: bold; /* Texte en gras */
+            box-sizing: border-box;
         }
 
-        canvas {
-            display: block;
-            z-index: 1;
+        /* Compteur et lien */
+        .hidden {
+            display: none;
+        }
+
+        .countdown {
+            font-size: 2em;
+            color: cyan;
+            margin-top: 20px;
+        }
+
+        a {
+            color: orange;
+            text-decoration: none;
+            font-weight: bold; /* Lien en gras */
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="matrix-text" id="text">
-        <p>Date : du 21 mai au 28 mai 2025</p>
-        <p>Lieux : Proche Avignon</p>
-    </div>
+    <!-- Canvas pour l'animation Matrix -->
     <canvas id="matrixCanvas"></canvas>
 
+    <!-- Texte animé -->
+    <div class="content">
+        <span id="animatedText"></span>
+        <div class="countdown hidden" id="countdown">Compteur jusqu'au samedi 4 janvier 2025 à 12h00</div>
+        <div id="link" class="hidden">
+            En attendant, apprenez la chanson des vacances : <br>
+            <a href="https://www.youtube.com/watch?v=--hD8k50REo" target="_blank">🎵 Apprendre la chanson 🎵</a>
+        </div>
+    </div>
+
+    <!-- Script pour l'animation Matrix -->
     <script>
+        /* Animation Matrix */
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         const fontSize = 14;
-        const columns = canvas.width / fontSize; // Number of columns
+        const columns = Math.floor(canvas.width / fontSize);
         const drops = Array.from({ length: columns }).fill(1);
 
         function drawMatrix() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             ctx.fillStyle = 'limegreen';
-            ctx.font = `${fontSize}px Courier New`;
+            ctx.font = `${fontSize}px monospace`;
 
             drops.forEach((y, x) => {
                 const text = Math.random() > 0.5 ? '0' : '1';
@@ -69,16 +102,63 @@
 
                 ctx.fillText(text, xPos, yPos);
 
-                if (Math.random() > 0.95) {
-                    drops[x] = 0; // Reset drop occasionally
-                }
-
+                if (yPos > canvas.height && Math.random() > 0.975) drops[x] = 0;
                 drops[x]++;
             });
         }
-
-        // Interval for drawing the matrix
         setInterval(drawMatrix, 50);
+
+        /* Animation du texte */
+        const text = `
+Félicitations!  
+
+Si vous êtes arrivé.es sur ce site, c'est que vous êtes invité.es à la Semaine des 30 ans mais pas que.  
+
+Nous vous invitons à bloquer votre agenda du 24 au 31 mai 2025.  
+
+Plus d'informations dans  
+`;
+        const animatedText = document.getElementById('animatedText');
+        const countdown = document.getElementById('countdown');
+        const link = document.getElementById('link');
+
+        let index = 0;
+        function typeWriter() {
+            if (index < text.length) {
+                animatedText.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 30); // Vitesse de frappe
+            } else {
+                countdown.classList.remove('hidden');
+                startCountdown();
+                setTimeout(() => link.classList.remove('hidden'), 1000);
+            }
+        }
+        typeWriter();
+
+        /* Compteur jusqu'au 4 janvier 2025 */
+        const targetDate = new Date("2025-01-04T12:00:00+01:00").getTime();
+
+        function startCountdown() {
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdown.innerHTML = 
+                    `${days} jours : ${hours} heures : ${minutes} minutes : ${seconds} secondes`;
+
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    countdown.innerHTML = "L'événement a commencé ! 🎉";
+                }
+            }
+            const countdownInterval = setInterval(updateCountdown, 1000);
+        }
     </script>
 </body>
 </html>
