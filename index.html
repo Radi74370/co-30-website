@@ -33,29 +33,32 @@
             position: relative;
             z-index: 1;
             white-space: pre-wrap;
+            text-align: center;
             color: red;
             font-size: 1.4em;
-            text-align: center;
+            font-weight: bold;
             padding: 20px;
-            font-weight: bold; /* Texte en gras */
             box-sizing: border-box;
         }
 
-        /* Compteur et lien */
-        .hidden {
-            display: none;
+        .countdown {
+            font-size: 1.2em;
+            margin-top: 20px;
+            line-height: 1.8;
+            text-align: center;
         }
 
-        .countdown {
-            font-size: 1.4em; /* Même taille que le texte principal */
-            color: red; /* Même couleur que le texte principal */
-            margin-top: 20px;
+        .song-link {
+            margin-top: 30px;
+            text-align: center;
+            color: orange;
+            font-size: 1.2em;
+            font-weight: bold;
         }
 
         a {
             color: orange;
             text-decoration: none;
-            font-weight: bold; /* Lien en gras */
         }
 
         a:hover {
@@ -67,12 +70,20 @@
     <!-- Canvas pour l'animation Matrix -->
     <canvas id="matrixCanvas"></canvas>
 
-    <!-- Texte animé -->
+    <!-- Contenu principal -->
     <div class="content">
-        <span id="animatedText"></span>
-        <div class="countdown hidden" id="countdown">Be ready: 00; 00; 00; 00</div>
-        <div id="link" class="hidden">
-            En attendant, apprenez la chanson des vacances : <br>
+        Félicitations!  
+
+        Si vous êtes arrivé.es sur ce site, c'est que vous êtes invité.es à la Semaine des 30 ans mais pas que.  
+
+        Nous vous invitons à bloquer votre agenda du 24 au 31 mai 2025.  
+
+        Be ready! 
+
+        <div class="countdown" id="countdown">153 jours : 17 heures : 22 minutes : 55 secondes</div>
+
+        <div class="song-link">
+            En attendant, apprenez la chanson des vacances : <br><br>
             <a href="https://www.youtube.com/watch?v=--hD8k50REo" target="_blank">🎵 Apprendre la chanson 🎵</a>
         </div>
     </div>
@@ -108,55 +119,28 @@
         }
         setInterval(drawMatrix, 50);
 
-        /* Animation du texte */
-        const text = `
-Félicitations!  
-
-Si vous êtes arrivé.es sur ce site, c'est que vous êtes invité.es à la Semaine des 30 ans mais pas que.  
-
-Nous vous invitons à bloquer votre agenda du 24 au 31 mai 2025.  
-`;
-        const animatedText = document.getElementById('animatedText');
-        const countdown = document.getElementById('countdown');
-        const link = document.getElementById('link');
-
-        let index = 0;
-        function typeWriter() {
-            if (index < text.length) {
-                animatedText.innerHTML += text.charAt(index);
-                index++;
-                setTimeout(typeWriter, 30); // Vitesse de frappe
-            } else {
-                countdown.classList.remove('hidden');
-                startCountdown();
-                setTimeout(() => link.classList.remove('hidden'), 1000);
-            }
-        }
-        typeWriter();
-
-        /* Compteur jusqu'au 24 mai 2025 */
+        /* Compteur dynamique */
         const targetDate = new Date("2025-05-24T12:00:00+01:00").getTime();
+        const countdown = document.getElementById("countdown");
 
-        function startCountdown() {
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const distance = targetDate - now;
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
 
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                countdown.innerHTML = 
-                    `Be ready: ${days.toString().padStart(2, '0')}; ${hours.toString().padStart(2, '0')}; ${minutes.toString().padStart(2, '0')}; ${seconds.toString().padStart(2, '0')}`;
+            countdown.innerHTML = 
+                `${days} jours : ${hours} heures : ${minutes} minutes : ${seconds} secondes`;
 
-                if (distance < 0) {
-                    clearInterval(countdownInterval);
-                    countdown.innerHTML = "L'événement a commencé ! 🎉";
-                }
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                countdown.innerHTML = "L'événement a commencé ! 🎉";
             }
-            const countdownInterval = setInterval(updateCountdown, 1000);
         }
+        const countdownInterval = setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
