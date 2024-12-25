@@ -28,7 +28,7 @@
             z-index: 0;
         }
 
-        /* Texte animé */
+        /* Contenu principal */
         .content {
             position: relative;
             z-index: 1;
@@ -41,6 +41,7 @@
             box-sizing: border-box;
         }
 
+        /* Compteur */
         .countdown {
             font-size: 1.2em;
             margin-top: 20px;
@@ -48,6 +49,7 @@
             text-align: center;
         }
 
+        /* Lien vers la chanson */
         .song-link {
             margin-top: 30px;
             text-align: center;
@@ -63,6 +65,22 @@
 
         a:hover {
             text-decoration: underline;
+        }
+
+        /* Styles spécifiques pour les petits écrans */
+        @media (max-width: 600px) {
+            .content {
+                font-size: 1.1em; /* Réduction de la taille de la police */
+                padding: 10px;
+            }
+
+            .countdown {
+                font-size: 1em; /* Réduction de la taille de la police du compteur */
+            }
+
+            .song-link {
+                font-size: 1em; /* Réduction de la taille de la police du lien */
+            }
         }
     </style>
 </head>
